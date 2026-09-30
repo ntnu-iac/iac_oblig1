@@ -11,6 +11,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "rg" {
   name     = "rg-tfstate-oleksako"
   location = "westeurope"
+  tags     = { "keep" = "true" }
 }
 
 resource "azurerm_storage_account" "sa" {

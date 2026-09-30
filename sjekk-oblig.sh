@@ -270,11 +270,16 @@ if [[ -n "$STORAGE_ACCOUNT" ]]; then
               --auth-mode login \
               --query "[].name" -o tsv 2>/dev/null)"
   ANTALL_BLOBER="$(printf '%s\n' "$BLOBER" | grep -c 'tfstate' || true)"
+  # Navnene skal med i utskriften. Antallet alene skiller ikke to miljøer fra
+  # to stacks i samme miljø - har du to stacks (K9), er fire filer det normale.
+  # Den kontrollen gjør et menneske, og da trengs navnene.
+  BLOBNAVN="$(printf '%s\n' "$BLOBER" | grep 'tfstate' | tr '\n' ' ' \
+              | sed 's/ *$//' | cut -c1-200)"
   if [[ "$ANTALL_BLOBER" -ge 2 ]]; then
-    ok "K6" "Fant $ANTALL_BLOBER state-filer i $CONTAINER"
+    ok "K6" "Fant $ANTALL_BLOBER state-filer i $CONTAINER: ${BLOBNAVN}"
   elif [[ "$ANTALL_BLOBER" -eq 1 ]]; then
     avvik "K6" "Én key per miljø" \
-          "Fant bare én state-fil. To miljøer skal gi to blober"
+          "Fant bare én state-fil (${BLOBNAVN}) - hvert miljø skal ha sin egen key"
   else
     avvik "K6" "Én key per miljø" \
           "Fant ingen state-filer i $CONTAINER på $STORAGE_ACCOUNT. Sjekk navn og tilgang"
