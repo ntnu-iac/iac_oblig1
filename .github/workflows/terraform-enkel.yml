@@ -13,7 +13,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: tf-project/rg
+        working-directory: test
 
     env:
       TF_INPUT: false
