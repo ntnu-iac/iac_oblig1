@@ -45,3 +45,27 @@ resource "azurerm_role_assignment" "blob_reader" {
     azurerm_storage_container.sc
   ]
 }
+
+variable "pipeline_principal_id" {
+  description = "Object-ID til service principal-en workflowen logger inn som"
+  type        = string
+}
+
+resource "azurerm_role_assignment" "kv_user_pipeline" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = var.pipeline_principal_id
+  principal_type       = "ServicePrincipal"
+}
+
+resource "azurerm_role_assignment" "pipeline_blob_contributor" {
+  scope                = azurerm_storage_account.sa.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = var.pipeline_principal_id
+  principal_type       = "ServicePrincipal"
+
+  depends_on = [
+    azurerm_storage_account.sa,
+    azurerm_storage_container.sc
+  ]
+}

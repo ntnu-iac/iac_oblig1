@@ -10,7 +10,7 @@ terraform {
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
   features {}
-  subscription_id = "38c12d6f-2edc-4e5c-8952-0b9c47fc4486"
+  # subscription_id = "38c12d6f-2edc-4e5c-8952-0b9c47fc4486"
   use_cli         = true # Bruker pålogging via `az login`
 
   # Fra og med azurerm 5.0 registreres ingen resource providers automatisk
