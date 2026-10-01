@@ -18,17 +18,22 @@ variable "address_prefixes" {
   description = "Subnett som skal opprettes: navn => netnum innenfor adresserommet"
 }
 
-variable "owner" {
-  type        = string
-  description = "Eier av ressursene, brukes i taggen Owner"
-}
+# variable "owner" {
+#   type        = string
+#   description = "Eier av ressursene, brukes i taggen Owner"
+# }
 
-variable "enviroment" {
-  type        = string
-  description = "Miljøet ressursene tilhører (f.eks. dev eller prod), brukes i taggen Enviroment"
-}
+# variable "enviroment" {
+#   type        = string
+#   description = "Miljøet ressursene tilhører (f.eks. dev eller prod), brukes i taggen Enviroment"
+# }
 
-variable "managedby" {
-  type        = string
-  description = "Verktøyet som administrerer ressursene (f.eks. OpenTofu), brukes i taggen ManagedBy"
+# variable "managedby" {
+#   type        = string
+#   description = "Verktøyet som administrerer ressursene (f.eks. OpenTofu), brukes i taggen ManagedBy"
+# }
+
+variable "tags" {
+  type        = map(string)
+  description = "Tags"
 }

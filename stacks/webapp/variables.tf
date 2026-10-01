@@ -37,3 +37,18 @@ variable "subnet_key" {
   type        = string
   description = "Navnet på subnettet (nøkkel i address_prefixes) som VM-en skal plasseres i"
 }
+
+variable "prefiks" {
+  type = string
+  description = "Unik prefiks"
+}
+
+variable "username" {
+  type = string
+  description = "Username"
+}
+
+variable "public_key" {
+  type = string
+  description = "SSH key"
+}
