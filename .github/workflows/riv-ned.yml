@@ -1,39 +1,55 @@
-name: Rull ut webapp
+name: Riv ned et miljø
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'stacks/webapp/**'
-      - '.github/workflows/terrafrom-env.yml'
-
   workflow_dispatch:
     inputs:
       environment:
-        description: Hvilket miljø skal rulles ut
+        description: Miljø som skal rives ned
         type: choice
         options: [dev, test, prod]
         required: true
-
-permissions:
-  id-token: write
-  contents: read
+      bekreftelse:
+        description: 'Skriv "riv ned <miljø>" for å bekrefte'
+        type: string
+        required: true
+      begrunnelse:
+        description: Hvorfor river du ned?
+        type: string
+        required: true
 
 concurrency:
-  group: webapp-${{ inputs.environment || 'dev' }}
+  group: webapp-${{ inputs.environment }}
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  bekreft:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'dev' }}
+    steps:
+      - name: Sjekk bekreftelsen
+        env:
+          BEKREFTELSE: ${{ inputs.bekreftelse }}
+          MILJO: ${{ inputs.environment }}
+        run: |
+          if [ "$BEKREFTELSE" != "riv ned $MILJO" ]; then
+            echo "::error::Ikke bekreftet. Forventet: riv ned $MILJO"
+            exit 1
+          fi
+          echo "Bekreftet."
+
+  riv-ned:
+    needs: bekreft
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      id-token: write
+      contents: read
 
     defaults:
       run:
         working-directory: stacks/webapp
 
     env:
-      MILJO: ${{ inputs.environment || 'dev' }}
+      MILJO: ${{ inputs.environment }}
       ARM_USE_OIDC: true
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -68,29 +84,15 @@ jobs:
             -backend-config="${{ github.workspace }}/shared/backend.tfbackend" \
             -backend-config="key=env/${{ env.MILJO }}/webapp.tfstate"
 
-      - name: Validate
-        run: terraform validate
+      - name: Lag en destroy-plan
+        run: terraform plan -destroy -out=tfdestroy
 
-      - name: Plan
-        run: terraform plan
+      - name: Utfør destroy-planen
+        run: terraform apply tfdestroy
 
-      - name: Apply
-        run: terraform apply -auto-approve
+      - name: Verifiser at det er tomt
+        run: terraform state list
 
       - name: Slett parameterfila
         if: always()
         run: rm -f params.auto.tfvars
-
-      # - name: Verifiser at appen svarer
-      #   run: |
-      #     URL=$(terraform output -raw webapp_url)
-      #     for i in $(seq 1 10); do
-      #       if curl -fsS --max-time 10 "https://$URL" > /dev/null; then
-      #         echo "Appen svarer på https://$URL"
-      #         exit 0
-      #       fi
-      #       echo "Forsøk $i: ikke oppe ennå, venter…"
-      #       sleep 15
-      #     done
-      #     echo "Appen svarte ikke innen tidsfristen"
-      #     exit 1
