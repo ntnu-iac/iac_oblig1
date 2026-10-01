@@ -28,25 +28,37 @@ locals {
   }
 }
 
-module "vnet" {
-  source           = "../../modules/network"
-  base_name        = local.base_name
-  location         = var.location
-  address_space    = var.address_space
-  address_prefixes = var.address_prefixes
-  tags             = local.tags
+# module "vnet" {
+#   source           = "../../modules/network"
+#   base_name        = local.base_name
+#   location         = var.location
+#   address_space    = var.address_space
+#   address_prefixes = var.address_prefixes
+#   tags             = local.tags
+# }
+
+data "terraform_remote_state" "subnet_id" {
+  backend = "azurerm"
+
+  config = {
+    resource_group_name  = "rg-tfstate-oleksako"
+    storage_account_name = "sttfstateoleksako01"
+    container_name       = "tfstate"
+    key                  = "env/${var.enviroment}/network.tfstate"
+    use_azuread_auth     = true
+  }
 }
 
 module "compute" {
-  source      = "../../modules/compute"
-  base_name   = local.base_name
-  tags        = local.tags
-  rg_name     = module.vnet.rgname
-  rg_location = module.vnet.rglocation
-  snet_id     = module.vnet.subnet_ids[var.subnet_key]
-  vm_size     = var.vm_size
-  username    = var.username
-  public_key  = var.public_key
+  source    = "../../modules/compute"
+  base_name = local.base_name
+  tags      = local.tags
+  location  = var.location
+  # snet_id     = module.vnet.subnet_ids[var.subnet_key]
+  snet_id    = data.terraform_remote_state.subnet_id.outputs.subnet_id[var.subnet_key]
+  vm_size    = var.vm_size
+  username   = var.username
+  public_key = var.public_key
 }
 
 # module "stack" {

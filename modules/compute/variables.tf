@@ -18,15 +18,15 @@ variable "base_name" {
 #   description = "Verktøyet som administrerer ressursene (f.eks. OpenTofu), brukes i taggen ManagedBy"
 # }
 
-variable "rg_name" {
-  type        = string
-  description = "Navnet på ressursgruppen der NIC og VM opprettes"
-}
+# variable "rg_name" {
+#   type        = string
+#   description = "Navnet på ressursgruppen der NIC og VM opprettes"
+# }
 
-variable "rg_location" {
-  type        = string
-  description = "Azure-regionen der NIC og VM opprettes"
-}
+# variable "rg_location" {
+#   type        = string
+#   description = "Azure-regionen der NIC og VM opprettes"
+# }
 
 variable "snet_id" {
   type        = string
@@ -51,4 +51,9 @@ variable "public_key" {
 variable "tags" {
   type        = map(string)
   description = "Tags"
+}
+
+variable "location" {
+  type        = string
+  description = "Azure-regionen ressursene opprettes i"
 }

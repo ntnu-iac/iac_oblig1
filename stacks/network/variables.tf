@@ -23,32 +23,32 @@ variable "managedby" {
   description = "Verktøyet som administrerer ressursene (f.eks. OpenTofu), brukes i taggen ManagedBy"
 }
 
-variable "vm_size" {
-  type        = string
-  description = "Størrelsen (SKU) på den virtuelle maskinen, f.eks. Standard_B2as_v2"
-}
+# variable "vm_size" {
+#   type        = string
+#   description = "Størrelsen (SKU) på den virtuelle maskinen, f.eks. Standard_B2as_v2"
+# }
 
 variable "location" {
   type        = string
   description = "Azure-regionen ressursene opprettes i, f.eks. Norway East"
 }
 
-variable "subnet_key" {
-  type        = string
-  description = "Navnet på subnettet (nøkkel i address_prefixes) som VM-en skal plasseres i"
-}
+# variable "subnet_key" {
+#   type        = string
+#   description = "Navnet på subnettet (nøkkel i address_prefixes) som VM-en skal plasseres i"
+# }
 
 variable "prefiks" {
-  type = string
+  type        = string
   description = "Unik prefiks"
 }
 
-variable "username" {
-  type = string
-  description = "Username"
-}
+# variable "username" {
+#   type = string
+#   description = "Username"
+# }
 
-variable "public_key" {
-  type = string
-  description = "SSH key"
-}
+# variable "public_key" {
+#   type = string
+#   description = "SSH key"
+# }

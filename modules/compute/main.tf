@@ -7,10 +7,16 @@ terraform {
   }
 }
 
+resource "azurerm_resource_group" "rg" {
+  name     = format("rg-compute-%s", lower(var.base_name))
+  location = var.location
+  tags     = var.tags
+}
+
 resource "azurerm_network_interface" "nic" {
   name                = format("nic-%s", lower(var.base_name))
-  location            = var.rg_location
-  resource_group_name = var.rg_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   tags                = var.tags
 
   ip_configuration {
@@ -22,8 +28,8 @@ resource "azurerm_network_interface" "nic" {
 
 resource "azurerm_linux_virtual_machine" "example" {
   name                = format("vm-%s", lower(var.base_name))
-  resource_group_name = var.rg_name
-  location            = var.rg_location
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   tags                = var.tags
   size                = var.vm_size
   admin_username      = var.username

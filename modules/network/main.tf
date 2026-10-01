@@ -8,7 +8,7 @@ terraform {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = format("rg-%s", lower(var.base_name))
+  name     = format("rg-net-%s", lower(var.base_name))
   location = var.location
   tags     = var.tags
 }
