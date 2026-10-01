@@ -27,4 +27,4 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Hvem er jeg?
-        run: az account show --query "{bruker:user.name, type:user.type, abonnement:name}" -o table
+        run: az account show
