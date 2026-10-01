@@ -58,7 +58,7 @@ jobs:
       - name: Init
         run: |
           terraform init \
-            -backend-config="${{ github.workspace }}/terraform-projects/shared/backend.hcl" \
+            -backend-config="${{ github.workspace }}/shared/backend.tfbackend" \
             -backend-config="key=env/${{ inputs.environment }}/webapp.tfstate"
 
       - name: Validate
